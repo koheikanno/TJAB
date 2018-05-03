@@ -10,7 +10,7 @@
 %
 % INPUTS:
 % M0: Freestream Mach number
-% alt: Altitude (ft)
+% alt: Altitude (m)
 % pi_c: Compressor pressure ratio
 % Tt4: Total temperature after combuster (Throttle setting) (K)
 % Tt7: Total temperature after afterburner (K)
@@ -21,14 +21,18 @@
 % Pt: Total pressure array, stations 0, 2, 3, 4, 5, 7, 9 (K)
 % M9: Exit Mach number
 % f: Air/fuel ratio
+% f_ab: Air/fuel ratio for afterburner
 % S: TSFC (kg/kg/s)
 % F_m0: Specific thrust (N/kg/s)
 % T: thrust (N)
 
 function [Tt, Pt, M9, f, S, F_m0, T] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
-cp_c = 1004; % J/kg-K
-gamma_c = 1.4;
+cp_c = cp_f(T0, 0);
+gamma_c = gamma_f(T0, 0);
+
+% cp_t, gamma_t and cp_ab and gamma_ab are functions of themselves...???
+% How do I get 
 R_c = (1 - 1/gamma_c) * cp_c;
 cp_t = 1155;
 gamma_t = 1.33;
@@ -121,7 +125,11 @@ MFP_1 = (gamma_c * gc / R_c)^0.5 * M1 * (1 + (gamma_c - 1)/2 * M1^2)^(-(gamma_c 
 mdot_1 = MFP_1 * Pt(1) * A1 / Tt(1)^0.5;
 MFP_0 = (gamma_c * gc / R_c)^0.5 * M0 * (1 + (gamma_c - 1)/2 * M0^2)^(-(gamma_c + 1) / (2 * (gamma_c - 1)));
 
-A0 = mdot_1 * Tt(1)^0.5 / Pt(1) / MFP_0;
+if MFP_0 ~= 0
+    A0 = mdot_1 * Tt(1)^0.5 / Pt(1) / MFP_0;
+else
+    A0 = 0;
+end
 
 if M0 == 0
     D_add = P1 * A1 * (1 + gamma_c * M1^2) - P0 * A1;
