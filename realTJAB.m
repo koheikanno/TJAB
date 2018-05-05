@@ -30,10 +30,9 @@ function [Tt, Pt, M9, f, S, F_m0, T] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
 cp_c = cp_f(T0, 0);
 gamma_c = gamma_f(T0, 0);
+R_c = (1 - 1/gamma_c) * cp_c;
 
 % cp_t, gamma_t and cp_ab and gamma_ab are functions of themselves...???
-% How do I get 
-R_c = (1 - 1/gamma_c) * cp_c;
 cp_t = 1155;
 gamma_t = 1.33;
 R_t = (1 - 1/gamma_t) * cp_t;
@@ -96,16 +95,16 @@ Pt(5) = Pt(4) * pi_t;
 % Afterburner
 pi_ab = 0.95;
 eta_ab = 0.999;
-Pt(7) = Pt(5) * pi_ab;
-Tt(7) = Tt7;
+Pt(6) = Pt(5) * pi_ab;
+Tt(6) = Tt7;
 tau_l_ab = cp_ab / cp_c * Tt(7) / T0;
 f_ab = (1 + f) * (tau_l_ab - tau_l * tau_t) / (eta_ab * hpr / (cp_c * T0) - tau_l_ab);
 
 % Nozzle
 tau_n = 1;
 pi_n = 0.97;
-Tt(9) = Tt(7) * tau_n;
-Pt(9) = Pt(7) * pi_n;
+Tt(7) = Tt(6) * tau_n;
+Pt(7) = Pt(6) * pi_n;
 
 % Other shizzles
 P9 = P0;
@@ -127,14 +126,9 @@ MFP_0 = (gamma_c * gc / R_c)^0.5 * M0 * (1 + (gamma_c - 1)/2 * M0^2)^(-(gamma_c 
 
 if MFP_0 ~= 0
     A0 = mdot_1 * Tt(1)^0.5 / Pt(1) / MFP_0;
+    D_add = P1 * A1 * (1 + gamma_c * M1^2) - P0 * A0 * gamma_c * M0^2 - P0 * A1;
 else
-    A0 = 0;
-end
-
-if M0 == 0
     D_add = P1 * A1 * (1 + gamma_c * M1^2) - P0 * A1;
-else
-    D_add = P1 * A1 * (1 + gamma_c * M1^2) - P0 * A0 * gamma_c * M0^2 - P0 * A1; 
 end
 
 T = T - D_add;

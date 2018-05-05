@@ -17,9 +17,9 @@
 % cp: Specific heat (J/kg-K)
 
 
-function cp = cp_f(T, f)
+function [cp, var] = cp_f(T, f)
 load cp_tab.mat
-
+var = 1;
 for ii = 1:length(cp_tab)
     afr(ii) = cp_tab(ii).f;
 end
