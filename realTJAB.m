@@ -26,7 +26,7 @@
 % F_m0: Specific thrust (N/kg/s)
 % T: thrust (N)
 
-function [Tt, Pt, M9, f, S, F_m0, T, D_add] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
+function [Tt, Pt, M9, f, S, F_m0, T, D_add, etap, etat, eta0] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
 cp_c = 1004.8; %j/kgk
 gamma_c = 1.3999;
@@ -132,4 +132,10 @@ else
 end
 
 T = T - D_add;
+
+v0 = M0*a0;
+etap = (2*gc*v0*F_m0)/(a0^2*[(1+f+f_ab)*V9_a0^2-M0^2]);
+etat = (a0^2*[(1+f+f_ab)*V9_a0^2-M0^2])/(2*(f+f_ab)*hpr);
+eta0 = etap*etat;
+
 end

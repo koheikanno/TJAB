@@ -12,7 +12,7 @@ Pt = zeros(length(pi_c),7);
 size = 20;
 
 for i = 1:length(d)
-[Tt0(i,:), Pt0(i,:), M90(i), f0(i), S0(i), F_m00(i), T0(i), D_add0(i)] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d(i));
+[Tt0(i,:), Pt0(i,:), M90(i), f0(i), S0(i), F_m00(i), T0(i), D_add0(i), etap(i), etat(i), eta0(i)] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d(i));
 end
 
 q = plot(d,T0);
@@ -32,10 +32,62 @@ set(findall(gca, 'Type', 'Line'),'LineWidth',2);
 xt = get(gca, 'XTick');
 set(gca, 'FontSize', 16)
 %%
-d0 = 0.75
-
-pic = linspace(2,40,100)
-for i = 1:length(pic)
-[Tt1(i,:), Pt1(i,:), M91(i), f1(i), S1(i), F_m01(i), T1(i), D_add1(i)] = realTJAB(M0, alt, pic(i), Tt4, Tt7, d0)
+d0 = 0.7576;
+M0 = 3;
+alt = 18000;
+pic = linspace(1,40,100);
+for i = 1:length(pic);
+[Tt1(i,:), Pt1(i,:), M91(i), f1(i), S1(i), F_m01(i), T1(i), D_add1(i), etap(i), etat(i), eta0(i)] = realTJAB(M0, alt, pic(i), Tt4, Tt7, d0);
 end
 
+subplot(2,3,1)
+plot(pic,M91)
+title('Exit Mach vs Compressor Pressure Ratio')
+xlabel('Compressor Pressure Ratio')
+ylabel('Exit Mach Number')
+
+subplot(2,3,2)
+plot(pic,f1)
+title('Air Fuel Ratio vs Compressor Pressure Ratio')
+xlabel('Compressor Pressure Ratio')
+ylabel('Air Fuel Ratio')
+
+subplot(2,3,3)
+plot(pic,S1)
+title('Specific Fuel Consumption vs Compressor Pressure Ratio')
+xlabel('Compressor Pressure Ratio')
+ylabel('Specific Fuel Consumption')
+
+subplot(2,3,4)
+plot(pic,F_m01)
+title('Specific Thrust vs Compressor Pressure Ratio')
+xlabel('Compressor Pressure Ratio')
+ylabel('Specific Thrust')
+
+subplot(2,3,5)
+plot(pic,T1)
+title('Thrust vs Compressor Pressure Ratio')
+xlabel('Compressor Pressure Ratio')
+ylabel('Thrust')
+set(gcf, 'color' ,'white');
+
+figure('name','Efficiency vs Compressor Pressure Ratio');
+subplot(1,3,1)
+plot(pic,etap)
+xlabel('Compressor Pressure Ratio','fontsize',size);
+ylabel('Propulsive Efficiency','fontsize',size);
+set(gcf, 'color' ,'white');
+
+subplot(1,3,2)
+plot(pic,etat)
+xlabel('Compressor Pressure Ratio','fontsize',size);
+ylabel('Thermal Efficiency','fontsize',size);
+set(gcf, 'color' ,'white');
+
+subplot(1,3,3)
+plot(pic,eta0)
+xlabel('Compressor Pressure Ratio','fontsize',size);
+ylabel('Overall Efficiency','fontsize',size);
+set(gcf, 'color' ,'white');
+[ax,h1]=suplabel('Efficiencies vs Compressor Pressure Ratios' ,'t'); 
+set(h1,'FontSize',30) 
