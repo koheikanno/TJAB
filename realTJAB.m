@@ -28,16 +28,16 @@
 
 function [Tt, Pt, M9, f, S, F_m0, T, D_add] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
-cp_c = cp_f(T0, 0);
-gamma_c = gamma_f(T0, 0);
+cp_c = 1004.8; %j/kgk
+gamma_c = 1.3999;
 R_c = (1 - 1/gamma_c) * cp_c;
 
 % cp_t, gamma_t and cp_ab and gamma_ab are functions of themselves...???
-cp_t = 1155;
-gamma_t = 1.33;
+cp_t = 1335.4; %j/kgk
+gamma_t = 1.2754;
 R_t = (1 - 1/gamma_t) * cp_t;
-cp_ab = 1235;
-gamma_ab = 1.3;
+cp_ab = 1426.8; %j/kgk
+gamma_ab = 1.2576;
 R_ab = (1 - 1/gamma_ab) * cp_ab;
 gc = 1;
 M1 = 0.5;
