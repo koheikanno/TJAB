@@ -9,7 +9,6 @@ Tt7 = 2220
 d = linspace(0.1,2,1000)
 Tt = zeros(length(pi_c),7)
 Pt = zeros(length(pi_c),7)
-disp('I like coconuts')
 
 for i = 1:length(d)
 [Tt(i,:), Pt(i,:), M9(i), f(i), S(i), F_m0(i), T(i), D_add(i)] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d(i))

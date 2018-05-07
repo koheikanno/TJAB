@@ -97,7 +97,7 @@ pi_ab = 0.95;
 eta_ab = 0.999;
 Pt(6) = Pt(5) * pi_ab;
 Tt(6) = Tt7;
-tau_l_ab = cp_ab / cp_c * Tt(7) / T0;
+tau_l_ab = cp_ab / cp_c * Tt(6) / T0;
 f_ab = (1 + f) * (tau_l_ab - tau_l * tau_t) / (eta_ab * hpr / (cp_c * T0) - tau_l_ab);
 
 % Nozzle
