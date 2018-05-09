@@ -26,7 +26,7 @@
 % F_m0: Specific thrust (N/kg/s)
 % T: thrust (N)
 
-function [Tt, Pt, M9, f, S, F_m0, T, D_add] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
+function [Tt, Pt, M9, f, S, F_m0, T, D_add, F_burn, mdot_1, howlong, wfwi] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
 cp_c = 1004.8; %j/kgk
 gamma_c = 1.3999;
@@ -97,7 +97,7 @@ pi_ab = 0.95;
 eta_ab = 0.999;
 Pt(6) = Pt(5) * pi_ab;
 Tt(6) = Tt7;
-tau_l_ab = cp_ab / cp_c * Tt(7) / T0;
+tau_l_ab = cp_ab / cp_c * Tt(6) / T0;
 f_ab = (1 + f) * (tau_l_ab - tau_l * tau_t) / (eta_ab * hpr / (cp_c * T0) - tau_l_ab);
 
 % Nozzle
@@ -132,4 +132,12 @@ else
 end
 
 T = T - D_add;
+F_burn = S * T * 5500e3 / (M0 * a0);
+wfwi = exp(-1/10 * S * 5500e3 / (M0*a0));
+howlong = 5500e3 / (M0 * a0);
+
+if Tt(3) > Tt(4)
+    disp('asdfghjklkjhgfdfghjklkewerioirewiourewqetyuiugfdsdf')
+    return
+end
 end
