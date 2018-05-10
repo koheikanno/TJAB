@@ -26,7 +26,7 @@
 % F_m0: Specific thrust (N/kg/s)
 % T: thrust (N)
 
-function [Tt, Pt, M9, f, S, F_m0, T, D_add, F_burn, mdot_1, howlong, wfwi] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
+function [Tt, Pt, M9, f, S, F_m0, T, D_add, F_burn, mdot_1] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
 cp_c = 1004.8; %j/kgk
 gamma_c = 1.3999;
@@ -46,7 +46,6 @@ s0 = 7291.7; % J/kg-K
 hpr = 42800e3; % J/kg
 
 A1 = pi * d^2 / 4; % m2
-mdot_0 = rho0 * M1 * a0 * A1;
 
 % Ram Air
 tau_r = 1 + (gamma_c - 1)/2 * M0 ^2;
@@ -116,13 +115,15 @@ T9_T0 = Tt7 / T0 / Pt9_P9^((gamma_ab - 1) / gamma_ab);
 T9 = T0 * T9_T0;
 V9_a0 = M9 * ((gamma_ab * R_ab * T9) / (gamma_c * R_c * T0))^0.5;
 F_m0 = a0 / gc * ((1 + f + f_ab) * V9_a0 - M0 + (1 + f + f_ab) * R_ab / R_c * T9_T0 / V9_a0 * (1 - P0_P9) / gamma_c);
-T = F_m0 * mdot_0;
+
 S = (f + f_ab) / F_m0;
 P1 = Pt(1) / ((1 + (gamma_c - 1)/2 * M1 ^2) ^ (gamma_c / (gamma_c - 1)));
 
 MFP_1 = (gamma_c * gc / R_c)^0.5 * M1 * (1 + (gamma_c - 1)/2 * M1^2)^(-(gamma_c + 1) / (2 * (gamma_c - 1)));
 mdot_1 = MFP_1 * Pt(1) * A1 / Tt(1)^0.5;
 MFP_0 = (gamma_c * gc / R_c)^0.5 * M0 * (1 + (gamma_c - 1)/2 * M0^2)^(-(gamma_c + 1) / (2 * (gamma_c - 1)));
+T = F_m0 * mdot_1;
+
 
 if MFP_0 ~= 0
     A0 = mdot_1 * Tt(1)^0.5 / Pt(1) / MFP_0;
@@ -131,13 +132,9 @@ else
     D_add = P1 * A1 * (1 + gamma_c * M1^2) - P0 * A1;
 end
 
-T = T - D_add;
 F_burn = S * T * 5500e3 / (M0 * a0);
-wfwi = exp(-1/10 * S * 5500e3 / (M0*a0));
-howlong = 5500e3 / (M0 * a0);
 
-if Tt(3) > Tt(4)
-    disp('asdfghjklkjhgfdfghjklkewerioirewiourewqetyuiugfdsdf')
-    return
+if M0 < 1
+    T = T - D_add;
 end
 end
