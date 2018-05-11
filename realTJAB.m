@@ -1,4 +1,3 @@
-%% AE 167 Final Project
 %
 % Professor Vergine
 %
@@ -12,7 +11,7 @@
 % M0: Freestream Mach number
 % alt: Altitude (m)
 % pi_c: Compressor pressure ratio
-% Tt4: Total temperature after combuster (Throttle setting) (K)
+% Tt4: Total temperature after combustor (Throttle setting) (K)
 % Tt7: Total temperature after afterburner (K)
 % d: Inlet diameter (m)
 %
@@ -25,14 +24,22 @@
 % S: TSFC (kg/kg/s)
 % F_m0: Specific thrust (N/kg/s)
 % T: thrust (N)
+% D_add: Additive drag (N)
+% etap: Propulsive efficiency
+% etat: Thermal efficiency
+% eta0: Total efficiency
+% f_ab: Air/fuel ratio for the afterburner
+% F_burn: Fuel burn after 5,500 km flight at M3.0 (kg)
+% mdot_0: Mass flow rate through the engine (kg/s)
 
-function [Tt, Pt, M9, f, S, F_m0, T, D_add, etap, etat, eta0,f_ab ,F_burn,mdot_0] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
+function [Tt, Pt, M9, f, S, F_m0, T, D_add, etap, etat, eta0, f_ab, F_burn, mdot_0] = realTJAB(M0, alt, pi_c, Tt4, Tt7, d)
 [T0, a0, P0, rho0] = atmoscoesa(alt);
-cp_c = 1004.8; %j/kgk
+cp_c = 1004.8; % J/kg-K
 gamma_c = 1.3999;
 R_c = (1 - 1/gamma_c) * cp_c;
 
 % cp_t, gamma_t and cp_ab and gamma_ab are functions of themselves...???
+% If not call gamma_f() and cp_f() to find them?
 cp_t = 1335.4; %j/kgk
 gamma_t = 1.2754;
 R_t = (1 - 1/gamma_t) * cp_t;
@@ -85,7 +92,12 @@ f = (cp_c * Tt(3) - cp_t * Tt(4)) / (cp_t * Tt(4) - eta_b * hpr);
 
 % Turbine
 tau_l = cp_t * Tt(4) / cp_c / T0;
-eta_m = 0.995;
+if M0 < 0.1
+    % Assume the take-off power is set if M0 is less than 0.1
+    eta_m = 0.97;
+else
+    eta_m = 0.995;
+end
 e_t = 0.89;
 tau_t = 1 - 1 / (eta_m * (1 + f)) * tau_r / tau_l * (tau_c - 1);
 pi_t = tau_t ^ (gamma_t / ((gamma_t - 1) * e_t));
@@ -137,9 +149,6 @@ if M0 <1
     T = T - D_add;
 end
     
-
-
-
 v0 = M0*a0;
 etap = (2*gc*v0*F_m0)/(a0^2*[(1+f+f_ab)*V9_a0^2-M0^2]);
 etat = (a0^2*[(1+f+f_ab)*V9_a0^2-M0^2])/(2*(f+f_ab)*hpr);
